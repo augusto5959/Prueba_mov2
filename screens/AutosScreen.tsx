@@ -1,6 +1,6 @@
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
-import { getDatabase, ref, set } from 'firebase/database';
+import { ref, set } from 'firebase/database';
 import { db } from '../config/config';
 
 export default function AutosScreen() {
@@ -9,12 +9,23 @@ export default function AutosScreen() {
 	const [precio, setprecio] = useState(0);
 	const [categoria, setcategoria] = useState('');
 
+	function limpiarCampos() {
+		setcodigo('');
+		setmarca('');
+		setprecio(0);
+		setcategoria('');
+	}
+
 	function guardar() {
 		set(ref(db, 'autos/' + codigo), {
 			type: marca,
 			price: precio,
 			category: categoria,
 		});
+
+		Alert.alert('Guardado', 'El auto se guardó correctamente');
+
+		limpiarCampos();
 	}
 
 	return (
@@ -23,22 +34,26 @@ export default function AutosScreen() {
 			<TextInput
 				style={styles.input}
 				placeholder='Código'
+				value={codigo}
 				onChangeText={(texto) => setcodigo(texto)}
 			/>
 			<TextInput
 				style={styles.input}
 				placeholder='Marca'
+				value={marca}
 				onChangeText={(texto) => setmarca(texto)}
 			/>
 			<TextInput
 				style={styles.input}
 				placeholder='Ingresar monto'
 				keyboardType='numeric'
+				value={precio.toString()}
 				onChangeText={(texto) => setprecio(+texto)}
 			/>
 			<TextInput
 				style={styles.input}
 				placeholder='Categoría'
+				value={categoria}
 				onChangeText={(texto) => setcategoria(texto)}
 			/>
 			<Button title='Guardar' onPress={() => guardar()} />
